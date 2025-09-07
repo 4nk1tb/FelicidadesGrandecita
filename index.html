@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="color-scheme" content="light only" />
+  <meta name="theme-color" content="#e91e63" />
+  <title>¡Feliz Cumple, Alba!</title>
+  <meta name="description" content="Página de cumpleaños romántica y festiva para Alba: corazones, confeti, música, galería y un regalo sorpresa." />
+
+  <!-- Fuentes de Google -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600..700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Librerías CDN -->
+  <script defer src="https://cdn.jsdelivr.net/npm/dayjs@1/dayjs.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/dayjs@1/plugin/utc.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/dayjs@1/plugin/timezone.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/tsparticles@2/tsparticles.bundle.min.js"></script>
+
+  <style>
+    :root{
+      --primary:#e91e63;
+      --secondary:#ffb300;
+      --bg-start:#fff0f6;
+      --bg-end:#ffe3ed;
+      --ink:#3b1d2b;
+      --ink-weak:#6a3a4f;
+      --card:#ffffffcc;
+      --shadow: 0 10px 24px rgba(233,30,99,.18);
+      --shadow-strong: 0 18px 42px rgba(233,30,99,.22);
+      --radius:18px;
+    }
+    * { box-sizing: border-box; }
+    html,body{ margin:0; padding:0; }
+    body{
+      font-family: "Poppins", system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
+      color: var(--ink);
+      background: radial-gradient(1200px 800px at 10% 0%, var(--bg-start), transparent 60%),
+                  radial-gradient(900px 700px at 90% 10%, rgba(255,179,0,.25), transparent 60%),
+                  linear-gradient(180deg, var(--bg-start), var(--bg-end));
+      min-height: 100svh;
+      overflow-x: hidden;
+    }
+    .visually-hidden{ position:absolute !important; margin:-1px; border:0; padding:0; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; }
+    a.skip{ position: absolute; left:0; top:-40px; background:#000; color:#fff; padding:.7rem 1rem; z-index:10000; border-radius: 0 0 8px 0; }
+    a.skip:focus{ top:0; }
+
+    /* Bokeh sutil */
+    .bokeh::before, .bokeh::after{
+      content:""; position:fixed; inset:0; pointer-events:none; z-index:-1;
+      background:
+        radial-gradient(220px 160px at 15% 20%, rgba(233,30,99,.15), transparent 60%),
+        radial-gradient(200px 150px at 75% 15%, rgba(255,179,0,.18), transparent 60%),
+        radial-gradient(180px 140px at 85% 70%, rgba(233,30,99,.12), transparent 60%),
+        radial-gradient(240px 180px at 10% 90%, rgba(255,64,129,.12), transparent 60%);
+      filter: blur(4px);
+    }
+
+    /* Preloader */
+    #preloader{
+      position:fixed; inset:0; display:grid; place-items:center;
+      background: linear-gradient(180deg, #fff7fb, #ffe9f1);
+      z-index:9999;
+    }
+    .heart{
+      width:84px; height:84px; position:relative; transform: rotate(-45deg);
+      background: var(--primary);
+      border-radius: 16px 0 0 16px;
+      box-shadow: var(--shadow-strong);
+      will-change: transform;
+      animation: beat 900ms ease-in-out infinite;
+    }
+    .heart::before,.heart::after{
+      content:""; position:absolute; width:84px; height:84px; border-radius:50%;
+      background: var(--primary);
+    }
+    .heart::before{ top:-42px; left:0; }
+    .heart::after{ top:0; left:42px; }
+    @keyframes beat{ 0%,100%{ transform: rotate(-45deg) scale(1) } 25%{ transform: rotate(-45deg) scale(1.08) } 50%{ transform: rotate(-45deg) scale(1.15) } 75%{ transform: rotate(-45deg) scale(1.08) } }
+    @media (prefers-reduced-motion: reduce){
+      .heart{ animation: none; }
+    }
+
+    header.hero{
+      text-align:center;
+      padding: clamp(40px, 8svh, 72px) 16px 32px;
+      position: relative;
+    }
+    .hero h1{
+      font-family: "Dancing Script", cursive;
+      font-size: clamp(38px, 7.5vw, 84px);
+      line-height: 1;
+      color: #c2185b;
+      text-shadow: 0 6px 24px rgba(233,30,99,.22);
+      margin: 0 0 10px;
+      letter-spacing: .5px;
+    }
+    .hero .subtitle{
+      color: var(--ink-weak);
+      margin: 0 auto 18px;
+      max-width: 64ch;
+    }
+    #tsparticles{
+      position: relative;
+      width: min(1200px, 92vw);
+      height: clamp(260px, 54svh, 520px);
+      margin: 18px auto 0;
+      border-radius: 22px;
+      background: linear-gradient(180deg, rgba(255,255,255,.6), rgba(255,255,255,.35));
+      box-shadow: 0 10px 40px rgba(0,0,0,.06), inset 0 0 0 1px rgba(233,30,99,.15);
+      overflow: hidden;
+    }
+
+    /* Caja de regalo */
+    section#gift{ padding: 28px 16px 8px; }
+    .gift-card{
+      max-width: 1000px; margin: 0 auto; background: var(--card); backdrop-filter: blur(6px);
+      border-radius: var(--radius); padding: 18px; box-shadow: var(--shadow);
+      border: 1px solid rgba(233,30,99,.15);
+    }
+    .gift-grid{ display:grid; grid-template-columns: 1fr; gap:16px; align-items:center; }
+    @media(min-width:860px){ .gift-grid{ grid-template-columns: 1.2fr 1fr; gap:22px; } }
+    .gift-box{
+      position:relative; aspect-ratio: 4/3; display:grid; place-items:center; border-radius: 16px;
+      background: linear-gradient(135deg, rgba(233,30,99,.14), rgba(255,179,0,.12));
+      overflow:hidden;
+    }
+    .ribbon{
+      position:absolute; inset:0; pointer-events:none;
+      background:
+        linear-gradient(90deg, transparent 46%, rgba(255,255,255,.9) 48%, rgba(255,255,255,.9) 52%, transparent 54%),
+        linear-gradient(0deg, transparent 46%, rgba(255,255,255,.9) 48%, rgba(255,255,255,.9) 52%, transparent 54%);
+      mix-blend-mode: screen;
+    }
+    .tag{
+      position: absolute; top: 10px; right: 10px; background:#fff; color:#a0003a; font-weight:600;
+      padding:.5rem .7rem; border-radius:10px; box-shadow: var(--shadow);
+      border:1px solid rgba(233,30,99,.18);
+    }
+    .gift-draw{
+      width: 50%; min-width: 220px; aspect-ratio: 1/1; position: relative;
+    }
+    .box{ width:100%; height:60%; background:#ff9ec0; border-radius:12px; position:absolute; bottom:0; left:0;
+      box-shadow: inset 0 -3px 0 rgba(0,0,0,.06), var(--shadow);
+      transform-origin: center; }
+    .box::after{ content:""; position:absolute; inset:0; background:
+      linear-gradient(90deg, rgba(255,255,255,.8) 48%, rgba(255,64,129,.9) 48%, rgba(255,64,129,.9) 52%, rgba(255,255,255,.8) 52%); border-radius:12px; }
+    .lid{ width:110%; height:22%; left:-5%; top:-2%; position:absolute; background:#ff78a7; border-radius:14px; box-shadow: var(--shadow); }
+    .lid::after{ content:""; position:absolute; inset:0; background:
+      linear-gradient(90deg, rgba(255,255,255,.9) 48%, rgba(233,30,99,.95) 48%, rgba(233,30,99,.95) 52%, rgba(255,255,255,.9) 52%); border-radius:14px; }
+    .gift-box .hint{ position:absolute; bottom:12px; left:12px; font-size:.9rem; color:#7a4458; }
+
+    /* Oso asomándose dentro de la caja de regalo */
+    .bear-head{
+      position: absolute;
+      bottom: 20%;
+      left: 50%;
+      width: 60%;
+      max-width: 180px;
+      transform: translate(-50%, 100%);
+      opacity: 0;
+      pointer-events: none;
+      transition: transform .6s ease-out, opacity .6s ease-out;
+      z-index: 2;
+    }
+    .bear-head.shown{
+      transform: translate(-50%, -20%);
+      opacity: 1;
+    }
+    .countdown{
+      display:flex; gap:10px; align-items:center; justify-content:center; margin-top: 10px; flex-wrap: wrap;
+    }
+    .pill{ background:#ffffffaa; padding:.45rem .7rem; border-radius:999px; border:1px solid rgba(0,0,0,.05); min-width: 88px; text-align:center; }
+    .emph{ color:#a0003a; font-weight:600; }
+
+    .gift-info h2{ margin: 0 0 8px; font-size: clamp(20px, 3.4vw, 28px); color:#a0003a; }
+    .gift-actions{ display:flex; gap:10px; flex-wrap: wrap; margin-top: 12px; }
+    .btn{
+      --btn-bg: var(--primary); --btn-fg: #fff; --btn-bd: transparent;
+      appearance:none; border:1px solid var(--btn-bd); background: var(--btn-bg); color: var(--btn-fg);
+      padding:.75rem 1rem; border-radius: 12px; font-weight:600; cursor:pointer;
+      box-shadow: var(--shadow); transition: transform .12s ease, filter .2s ease, background .2s ease, border-color .2s ease;
+    }
+    .btn:hover{ transform: translateY(-2px); }
+    .btn:active{ transform: translateY(0); filter: brightness(.96); }
+    .btn[disabled]{ opacity:.55; cursor:not-allowed; filter: grayscale(.2); }
+    .btn.secondary{ --btn-bg:#fff; --btn-fg: var(--primary); --btn-bd: rgba(233,30,99,.35); }
+    .btn.ghost{ --btn-bg: transparent; --btn-fg: var(--primary); --btn-bd: rgba(233,30,99,.3); }
+
+    /* Mensaje de felicitación */
+    section#message{ padding: 22px 16px; }
+    .message-card{
+      max-width: 1000px; margin: 0 auto; background: var(--card); border-radius: var(--radius); padding: 18px;
+      border: 1px solid rgba(233,30,99,.15); box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
+    .message-card h2{
+      font-family: "Dancing Script"; color:#a0003a; margin:0 0 .25rem; font-size: clamp(26px, 4.2vw, 36px);
+    }
+    .message-body{ color:#5b2c3e; }
+    .copy-wrap{ display:flex; gap:10px; flex-wrap:wrap; }
+
+    /* Capa de censura flotante para el mensaje de felicitación */
+    .censor-overlay{
+      position:absolute;
+      inset:0;
+      pointer-events:none;
+      z-index:3;
+      /* Patrón de barras diagonales para crear un efecto de censura */
+      background: repeating-linear-gradient(45deg,
+        rgba(255,255,255,0.7) 0 20px,
+        rgba(255,255,255,0.4) 20px 40px);
+      backdrop-filter: blur(4px);
+      opacity:1;
+      animation: moveCensor 3s linear infinite;
+      transition: opacity .8s ease;
+    }
+    @keyframes moveCensor{
+      from{ background-position: 0 0; }
+      to{ background-position: 200px 0; }
+    }
+
+    /* Galería polaroid */
+    section#gallery{ padding: 22px 10px 34px; }
+    .polaroid-grid{
+      max-width: 1200px; margin: 0 auto; columns: 1; column-gap: 12px;
+    }
+    @media(min-width:560px){ .polaroid-grid{ columns: 2; } }
+    @media(min-width:920px){ .polaroid-grid{ columns: 3; } }
+    .polaroid{
+      display:inline-block; width:100%; break-inside: avoid; margin: 8px 6px 14px;
+      perspective: 800px;
+    }
+    .polaroid figure{
+      background:#fff; padding: 10px 10px 46px; border-radius: 12px; box-shadow: 0 8px 18px rgba(0,0,0,.12);
+      transform: rotate(var(--rot, 0deg)) translateZ(0);
+      transition: transform .25s ease, box-shadow .25s ease, filter .3s ease;
+      will-change: transform;
+      border: 1px solid rgba(0,0,0,.06);
+    }
+    .polaroid img{ width:100%; height:auto; display:block; border-radius: 8px; }
+    .polaroid figcaption{
+      position:absolute; left: 0; right: 0; bottom: 10px; text-align:center; font-size:.95rem; color:#5f2a3d;
+    }
+    .polaroid figure:focus-visible{ outline: 3px solid #a0003a; outline-offset: 2px; }
+    .polaroid figure:hover{ transform: rotate(var(--rot,0deg)) translateY(-4px) scale(1.01); box-shadow: 0 16px 32px rgba(0,0,0,.18); }
+    @media (prefers-reduced-motion: reduce){
+      .polaroid figure{ transition: none; }
+      .polaroid figure:hover{ transform: none; }
+    }
+
+    /* Lightbox (modal) */
+    .lightbox{
+      position: fixed; inset:0; background: rgba(0,0,0,.75); display:none; align-items:center; justify-content:center;
+      z-index: 9998; padding: 24px;
+    }
+    .lightbox[aria-hidden="false"]{ display:flex; }
+    .lightbox .frame{
+      background: #fff; color:#111; width: min(92vw, 1100px); max-height: 90svh; border-radius: 14px; overflow: hidden;
+      box-shadow: 0 20px 48px rgba(0,0,0,.35);
+      display:grid; grid-template-rows: auto 1fr auto;
+    }
+    .lightbox header{ display:flex; align-items:center; justify-content:space-between; gap:10px; padding:12px 12px; background:#fff3f7; }
+    .lightbox h3{ margin:0; font-size:1rem; color:#a0003a; }
+    .lightbox .viewport{ display:grid; place-items:center; background:#000; }
+    .lightbox img{ width:100%; height:100%; object-fit:contain; }
+    .lightbox footer{ display:flex; gap:8px; align-items:center; justify-content:space-between; padding:10px 12px; background:#fff; }
+    .lb-btn{
+      appearance:none; background:#fff; border:1px solid #ddd; padding:.55rem .75rem; border-radius:10px; cursor:pointer; font-weight:600;
+    }
+    .lb-btn:focus-visible{ outline:3px solid #a0003a; outline-offset:2px; }
+
+    /* Controles flotantes */
+    .floating{
+      position:fixed; right:12px; bottom:12px; display:flex; flex-direction:column; gap:10px; z-index: 2000;
+    }
+    .fbtn{
+      appearance:none; border:none; background:#ffffffd9; color:#a0003a; border:1px solid rgba(233,30,99,.25);
+      padding:.65rem .8rem; border-radius: 999px; box-shadow: var(--shadow);
+      font-weight:700; cursor:pointer; min-width: 44px; min-height: 44px;
+    }
+    .fbtn:focus-visible{ outline: 3px solid #a0003a; outline-offset: 2px; }
+    .hint{ font-size:.84rem; color:#7a4458; }
+
+    footer.site{ text-align:center; color:#6e4155; padding: 28px 16px 48px; font-size:.95rem; }
+
+    /* Pausa global opcional */
+    [data-reduced="true"] *{ animation-play-state: paused !important; transition: none !important; }
+  </style>
+</head>
+<body class="bokeh">
+  <a href="#main" class="skip">Saltar al contenido</a>
+
+  <!-- Preloader accesible -->
+  <div id="preloader" aria-live="polite" aria-busy="true">
+    <div class="heart" aria-label="Cargando" role="img"></div>
+    <span class="visually-hidden">Cargando contenido…</span>
+  </div>
+
+  <main id="main">
+    <!-- HERO -->
+    <header class="hero" aria-labelledby="heroTitle">
+      <h1 id="heroTitle">¡Feliz Cumple, Alba!</h1>
+      <p class="subtitle">Pasa el mouse o toca el corazón para jugar con las partículas 💖</p>
+      <div id="tsparticles" aria-hidden="true"></div>
+    </header>
+
+    <!-- REGALO -->
+    <section id="gift" aria-labelledby="giftTitle">
+      <div class="gift-card">
+        <div class="gift-grid">
+          <div class="gift-box" aria-describedby="giftHint">
+            <span class="tag" id="giftRibbon">No lo abras hasta el 9 de septiembre</span>
+            <div class="ribbon" aria-hidden="true"></div>
+            <div class="gift-draw" aria-hidden="true">
+              <div class="lid"></div>
+              <div class="box"></div>
+            </div>
+            <!-- Cabeza del oso que se asoma al abrir el regalo -->
+            <img id="bearHead" src="panda-head.png" alt="Osito panda asomándose" class="bear-head" aria-hidden="true" />
+            <p class="hint" id="giftHint">Contiene una sorpresa para Alba ✨</p>
+          </div>
+
+          <div class="gift-info">
+            <h2 id="giftTitle">Regalo bloqueado</h2>
+            <p class="hint" id="countdownLabel">Cuenta regresiva hasta el 9 de septiembre (Europe/Madrid):</p>
+            <div class="countdown" role="group" aria-labelledby="countdownLabel" aria-live="polite">
+              <span class="pill"><strong class="emph" id="dd">--</strong> días</span>
+              <span class="pill"><strong class="emph" id="hh">--</strong> horas</span>
+              <span class="pill"><strong class="emph" id="mm">--</strong> min</span>
+              <span class="pill"><strong class="emph" id="ss">--</strong> seg</span>
+              <span class="pill" id="statusPill" hidden>¡Es el momento! 🎉</span>
+            </div>
+            <div class="gift-actions">
+              <button type="button" class="btn" id="openGiftBtn" aria-disabled="true" disabled title="Disponible cuando el contador llegue a cero">Abrir regalo</button>
+              <button type="button" class="btn secondary" id="burstBtn">🎆 Confeti</button>
+            </div>
+            <p class="hint" id="autoplayHint" role="status" aria-live="polite" style="margin-top:8px;"></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- MENSAJE -->
+    <section id="message" aria-labelledby="msgTitle">
+      <div class="message-card">
+      <h2 id="msgTitle">Mensaje de felicitación</h2>
+        <div class="message-body" id="greeting"></div>
+        <!-- Capa de censura que cubre el mensaje hasta el día 9 de septiembre -->
+        <div id="messageCensor" class="censor-overlay" aria-hidden="true"></div>
+      <div class="copy-wrap" style="margin-top:10px;">
+        <button type="button" class="btn" id="copyMsgBtn" aria-label="Copiar mensaje completo">Copiar mensaje</button>
+        <button type="button" class="btn ghost" id="selectMsgBtn" aria-label="Seleccionar texto del mensaje">Seleccionar</button>
+      </div>
+      </div>
+    </section>
+
+    <!-- GALERÍA -->
+    <section id="gallery" aria-labelledby="galTitle">
+      <div class="message-card" style="margin-bottom:14px;">
+        <h2 id="galTitle">Galería de recuerdos</h2>
+        <p class="hint">Pulsa una foto para verla a pantalla completa. Usa ← / → o desliza para navegar. Esc para cerrar.</p>
+      </div>
+      <div class="polaroid-grid" id="grid" aria-live="polite"></div>
+    </section>
+
+    <!-- CONTROLES FLOTANTES -->
+    <div class="floating" aria-label="Controles de página">
+      <button class="fbtn" id="musicBtn" aria-pressed="false" aria-label="Reproducir música">▶ Música</button>
+      <button class="fbtn" id="toggleMotionBtn" aria-pressed="false" aria-label="Pausar animaciones">⏸ Animaciones</button>
+      <button class="fbtn" id="confettiBtn" aria-label="Lanzar confeti">🎆 Confeti</button>
+    </div>
+  </main>
+
+  <!-- MODAL DEL REGALO -->
+  <div class="lightbox" id="giftModal" role="dialog" aria-modal="true" aria-labelledby="giftModalTitle" aria-hidden="true">
+    <div class="frame" role="document">
+      <header>
+        <h3 id="giftModalTitle">¡Sorpresa! 🎉💖</h3>
+        <div>
+          <button class="lb-btn" id="giftCloseBtn" aria-label="Cerrar">Cerrar</button>
+        </div>
+      </header>
+      <div class="viewport" style="background:#fff">
+        <div style="padding:16px; max-width:900px; color:#5b2c3e;">
+          <div id="giftModalBody"></div>
+        </div>
+      </div>
+      <footer>
+        <span class="hint">Con cariño para Alba</span>
+        <button class="lb-btn" id="giftConfettiBtn">🎆 ¡Más confeti!</button>
+      </footer>
+    </div>
+  </div>
+
+  <!-- LIGHTBOX GALERÍA -->
+  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-labelledby="lightboxTitle" aria-hidden="true">
+    <div class="frame" role="document">
+      <header>
+        <h3 id="lightboxTitle">Vista de imagen</h3>
+        <div>
+          <button class="lb-btn" id="prevBtn" aria-label="Anterior">←</button>
+          <button class="lb-btn" id="nextBtn" aria-label="Siguiente">→</button>
+          <button class="lb-btn" id="closeBtn" aria-label="Cerrar">Esc</button>
+        </div>
+      </header>
+      <div class="viewport">
+        <img id="lightboxImg" alt="">
+      </div>
+      <footer>
+        <span id="lightboxCap"></span>
+        <span class="hint" id="lightboxIndex"></span>
+      </footer>
+    </div>
+  </div>
+
+  <!-- AUDIO -->
+  <audio id="bgm" preload="auto" loop hidden></audio>
+  <audio id="sfx" preload="auto" hidden></audio>
+
+  <script>
+    /* =========================
+       CONFIGURACIÓN EDITABLE
+       ========================= */
+    const CONFIG = {
+      honoree: "Alba",
+      timezone: "Europe/Madrid",
+      openMonth: 9, // septiembre (1-12)
+      openDay: 9,
+      colors: {
+        primary: "#e91e63",
+        secondary: "#ffb300",
+        bgStart: "#fff0f6",
+        bgEnd: "#ffe3ed"
+      },
+      messages: {
+        ribbon: "No lo abras hasta el 9 de septiembre",
+        heroTitle: "¡Feliz Cumple, Alba!",
+        greetingHTML:
+          "<p>Hoy celebramos tu día, <strong>Mi niña</strong>. Que cada latido te recuerde lo valiosa que eres y que este año llegue cargado de alegría, positividad y aventuras inolvidables.</p>" +
+          "<p>Gracias por tu luz y tu sonrisa. ¡Que todos tus deseos se cumplan! ✨</p>",
+        modalTitle: "¡Sorpresa! 🎉💖",
+        modalBodyHTML:
+          // Mensaje personalizado para Alba. Habla de cómo revivió la infancia y el niño interior, y promete protección y cariño a pesar de la distancia.
+          "<p>Desde que llegaste a mi vida, <strong>Grandecita mia</strong>, reviviste a mi niño interior. Contigo volví a sentir la magia y la inocencia de la infancia que pensé haber perdido. Gracias a ti, mi corazón volvió a jugar, a reír, a maravillarse.</p>" +
+          "<p>Siempre serás mi gordita grandecita, y aunque nuestros caminos hoy se separen, mi cariño y mi admiración por ti permanecen intactos. Deseo que cada cumpleaños venga cargado de momentos hermosos y que siempre encuentres motivos para sonreír.</p>" +
+          "<p>Aunque la distancia nos separe, prometo estar ahí para ti. Seguiremos cuidándonos y enseñándonos mutuamente, aprendiendo juntos a volar alto. Tu bienestar y tu felicidad siempre serán mi prioridad, porque sé que juntos podemos superar cualquier distancia.</p>"
+      },
+      audio: {
+        // Pista musical personalizada. El usuario adjuntó la canción "Quiero Verme" para que suene de fondo.
+        musicUrl: "ssvid.net--Quiero-Verme-LA-ALDEA-ON-AIR-Al2.mp3",
+        // Sonido de apertura de regalo. Se mantiene el mismo chime corto.
+        openSfxUrl: "assets/open.mp3",
+        autoplayHint: "Toca ▶ para activar la música"
+      },
+      gallery: {
+        images: [
+          {src:"IMG_4060.jpg", alt:"Pareja divertida", caption:"Momentos divertidos"},
+          {src:"IMG_8900.jpg", alt:"Foto artística en el espejo", caption:"Recuerdo en el espejo"},
+          {src:"2DFA13A3-5EBA-4839-8CC3-CC187D5140CF.jpg", alt:"Pareja besándose", caption:"Besos en el bar"},
+          {src:"IMG_3105.jpg", alt:"Pareja en el ascensor", caption:"Ascensor"},
+          // Foto adicional añadida por el usuario
+          {src:"IMG_0513.jpg", alt:"Pareja en la escalera mecánica", caption:"Escalera mecánica"}
+        ]
+      }
+    };
+
+    /* ==============
+       UTILIDADES
+       ============== */
+    const $ = sel => document.querySelector(sel);
+    const $$ = sel => Array.from(document.querySelectorAll(sel));
+    const pad = n => String(n).padStart(2, '0');
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const isCoarse = window.matchMedia('(pointer: coarse)').matches;
+
+    // Estado persistente
+    const store = {
+      get opened(){ return localStorage.getItem('giftOpened') === 'true'; },
+      set opened(v){ localStorage.setItem('giftOpened', v ? 'true' : 'false'); },
+      get motionOff(){ return localStorage.getItem('motionOff') === 'true'; },
+      set motionOff(v){ localStorage.setItem('motionOff', v ? 'true' : 'false'); },
+      get musicOn(){ return localStorage.getItem('musicOn') === 'true'; },
+      set musicOn(v){ localStorage.setItem('musicOn', v ? 'true' : 'false'); },
+    };
+
+    /* =========================
+       INICIALIZACIÓN DE LIBS
+       ========================= */
+    window.addEventListener('DOMContentLoaded', () => {
+      dayjs.extend(window.dayjs_plugin_utc);
+      dayjs.extend(window.dayjs_plugin_timezone);
+      dayjs.tz.setDefault(CONFIG.timezone);
+    });
+
+    // Precarga de imágenes/audio con timeout de seguridad
+    (function preload(){
+      const imgs = (CONFIG.gallery.images || []).map(i => i.src);
+      const audio = [CONFIG.audio.musicUrl, CONFIG.audio.openSfxUrl];
+      const promises = [];
+      imgs.forEach(src=>{
+        promises.push(new Promise(res=>{
+          const im = new Image();
+          im.loading = "eager";
+          im.decoding = "sync";
+          im.src = src;
+          im.onload = im.onerror = ()=>res();
+        }));
+      });
+      audio.forEach(src=>{
+        if(!src) return;
+        promises.push(new Promise(res=>{
+          const a = new Audio();
+          a.preload = "auto"; a.src = src;
+          a.oncanplaythrough = a.onerror = ()=>res();
+        }));
+      });
+      const timeout = new Promise(res=> setTimeout(res, prefersReduced ? 400 : 1300));
+      Promise.race([Promise.allSettled(promises), timeout]).finally(hidePreloader);
+    })();
+
+    function hidePreloader(){
+      const p = $('#preloader');
+      if(!p) return;
+      p.setAttribute('aria-busy','false');
+      p.style.transition = 'opacity .35s ease';
+      p.style.opacity = '0';
+      setTimeout(()=> p.remove(), 400);
+    }
+
+    /* =========================
+       HERO: Corazón de partículas
+       ========================= */
+    let particlesContainer;
+    async function initParticles(){
+      const baseCount = prefersReduced || store.motionOff ? (isCoarse ? 25 : 45) : (isCoarse ? 50 : 80);
+      particlesContainer = await tsParticles.load("tsparticles", {
+        fpsLimit: 60,
+        background: { color: "transparent" },
+        detectRetina: true,
+        fullScreen: { enable: false },
+        interactivity: {
+          detectsOn: "canvas",
+          events: {
+            onHover: { enable: !prefersReduced && !store.motionOff, mode: ["bubble", "repulse"], parallax: { enable: true, force: 12, smooth: 10 } },
+            onClick: { enable: true, mode: ["push", "repulse"] },
+            resize: true
+          },
+          modes: {
+            repulse: { distance: 120, duration: 0.4, speed: 1 },
+            bubble: { distance: 90, size: 8, duration: 2, opacity: 1 },
+            push: { quantity: 4 }
+          }
+        },
+        particles: {
+          number: { value: baseCount, density: { enable: true, area: 600 } },
+          color: { value: [CONFIG.colors.primary, CONFIG.colors.secondary, "#ff7aa8", "#ffcdd2"] },
+          // Las partículas ahora son principalmente corazones con algunos círculos mezclados
+          shape: { type: ["heart", "heart", "circle"], options: { heart: { sides: 5 } } },
+          opacity: {
+            value: { min: 0.5, max: 1 },
+            animation: { enable: true, speed: 0.6, minimumValue: 0.4, sync: false }
+          },
+          size: {
+            value: { min: 2, max: 6 },
+            animation: { enable: true, speed: 2, minimumValue: 0.5, sync: false }
+          },
+          rotate: { value: 0, direction: "random", animation: { enable: true, speed: 5 } },
+          move: {
+            enable: true,
+            speed: prefersReduced || store.motionOff ? 0.4 : 1.4,
+            direction: "none",
+            random: true,
+            straight: false,
+            outModes: { default: "out" },
+            attract: { enable: false }
+          },
+          links: { enable: true, color: CONFIG.colors.primary, opacity: 0.3, distance: 110, width: 1 }
+        }
+      });
+    }
+
+    /* =========================
+       CONFETI
+       ========================= */
+function burstConfetti(duration = 2200, shapes=['heart','circle','square']){
+      const end = Date.now() + duration;
+      (function frame(){
+        confetti({
+          particleCount: 6,
+          startVelocity: 40,
+          spread: 70,
+          ticks: 90,
+          shapes: shapes,
+          scalar: 1.0,
+          origin: { x: Math.random(), y: Math.random() * 0.4 }
+        });
+        if (Date.now() < end && !(prefersReduced || store.motionOff)) requestAnimationFrame(frame);
+      })();
+    }
+
+    /* =========================
+       LÓGICA DE FECHA (Europe/Madrid)
+       ========================= */
+    function getTargetDate(){
+      const now = dayjs().tz(CONFIG.timezone);
+      const thisYearTarget = dayjs.tz(`${now.year()}-${pad(CONFIG.openMonth)}-${pad(CONFIG.openDay)} 00:00:00`, CONFIG.timezone);
+      return now.isAfter(thisYearTarget) ? thisYearTarget.add(1, 'year') : thisYearTarget;
+    }
+    let unlockInstant = null;
+    function startCountdown(){
+      const dd = $("#dd"), hh = $("#hh"), mm = $("#mm"), ss = $("#ss"), statusPill = $("#statusPill");
+      const btn = $("#openGiftBtn");
+      const target = getTargetDate();
+      unlockInstant = target;
+      const tick = ()=>{
+        const now = dayjs().tz(CONFIG.timezone);
+        const diff = target.diff(now, 'millisecond');
+        if(diff <= 0 || store.opened){
+          dd.textContent = "00"; hh.textContent = "00"; mm.textContent = "00"; ss.textContent = "00";
+          statusPill.hidden = false;
+          btn.disabled = false; btn.removeAttribute('aria-disabled');
+          btn.title = "Abrir regalo ahora";
+          return;
+        }
+        const d = Math.floor(diff / 86400000);
+        const h = Math.floor((diff % 86400000) / 3600000);
+        const m = Math.floor((diff % 3600000) / 60000);
+        const s = Math.floor((diff % 60000) / 1000);
+        dd.textContent = pad(d);
+        hh.textContent = pad(h);
+        mm.textContent = pad(m);
+        ss.textContent = pad(s);
+      };
+      tick();
+      const id = setInterval(()=>{
+        tick();
+        if(!$("#openGiftBtn").disabled) clearInterval(id);
+      }, 1000);
+    }
+
+    /* =========================
+       MENSAJE DE FELICITACIÓN: CENSURA
+       ========================= */
+    function initMessageCensor(){
+      const overlay = document.getElementById('messageCensor');
+      if(!overlay) return;
+      // Calcular la próxima fecha de 9 de septiembre a las 00:00 en la zona especificada
+      const target = getTargetDate();
+      const now = dayjs().tz(CONFIG.timezone);
+      const diff = target.diff(now, 'millisecond');
+      // Si ya pasó la fecha, eliminar la censura inmediatamente
+      if(diff <= 0){
+        overlay.style.display = 'none';
+      } else {
+        overlay.style.display = 'block';
+        // Programar la eliminación de la censura cuando llegue la fecha
+        setTimeout(()=>{
+          // Desvanecer la capa y retirarla del DOM
+          overlay.style.opacity = '0';
+          setTimeout(()=>{ if(overlay.parentNode) overlay.parentNode.removeChild(overlay); }, 850);
+        }, diff);
+      }
+    }
+
+    /* =========================
+       REGALO: Modal accesible con focus-trap
+       ========================= */
+    const FocusTrap = (container)=>{
+      let lastFocused = null;
+      const focusablesSel = 'a[href], button:not([disabled]), textarea, input[type="text"], input:not([type]), input[type="search"], select, [tabindex]:not([tabindex="-1"])';
+      const getFocusables = () => Array.from(container.querySelectorAll(focusablesSel)).filter(el => el.offsetParent !== null || el === document.activeElement);
+      function onKey(e){
+        if(e.key === 'Tab'){
+          const els = getFocusables();
+          if(els.length === 0) return;
+          const first = els[0], last = els[els.length - 1];
+          if(e.shiftKey && document.activeElement === first){ e.preventDefault(); last.focus(); }
+          else if(!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
+        } else if(e.key === 'Escape'){
+          trap.close();
+        }
+      }
+      const trap = {
+        open(){
+          lastFocused = document.activeElement;
+          container.setAttribute('aria-hidden','false');
+          document.body.style.overflow = 'hidden';
+          const el = getFocusables()[0];
+          (el || container).focus();
+          container.addEventListener('keydown', onKey);
+        },
+        close(){
+          container.setAttribute('aria-hidden','true');
+          document.body.style.overflow = '';
+          container.removeEventListener('keydown', onKey);
+          lastFocused && lastFocused.focus();
+        }
+      };
+      return trap;
+    };
+    const giftTrap = FocusTrap($("#giftModal"));
+    const galleryTrap = FocusTrap($("#lightbox"));
+
+    /* =========================
+       GALERÍA POLAROID + LIGHTBOX
+       ========================= */
+    let currentIndex = 0;
+    function buildGallery(){
+      const grid = $("#grid");
+      grid.innerHTML = "";
+      (CONFIG.gallery.images || []).forEach((img, idx)=>{
+        const wrap = document.createElement('div');
+        wrap.className = 'polaroid';
+        const fig = document.createElement('figure');
+        fig.setAttribute('tabindex','0');
+        fig.style.setProperty('--rot', (Math.random() * 6 - 3).toFixed(2) + 'deg');
+        const image = document.createElement('img');
+        image.src = img.src;
+        image.alt = img.alt || `Foto ${idx+1}`;
+        image.loading = "lazy";
+        image.decoding = "async";
+        const cap = document.createElement('figcaption');
+        cap.textContent = img.caption || '';
+        fig.appendChild(image);
+        fig.appendChild(cap);
+        wrap.appendChild(fig);
+        grid.appendChild(wrap);
+        const open = ()=> openLightbox(idx);
+        fig.addEventListener('click', open);
+        fig.addEventListener('keydown', e=>{ if(e.key==='Enter' || e.key===' '){ e.preventDefault(); open(); } });
+      });
+    }
+    function openLightbox(index){
+      currentIndex = index;
+      const data = CONFIG.gallery.images[index];
+      const lb = $("#lightbox");
+      $("#lightboxImg").src = data.src;
+      $("#lightboxImg").alt = data.alt || "";
+      $("#lightboxCap").textContent = data.caption || "";
+      $("#lightboxIndex").textContent = `${index+1} / ${CONFIG.gallery.images.length}`;
+      galleryTrap.open();
+      lb.addEventListener('click', onBackdropClose);
+      document.addEventListener('keydown', onGalleryKeys);
+    }
+    function closeLightbox(){
+      const lb = $("#lightbox");
+      lb.removeEventListener('click', onBackdropClose);
+      document.removeEventListener('keydown', onGalleryKeys);
+      galleryTrap.close();
+    }
+    function onBackdropClose(e){ if(e.target === e.currentTarget) closeLightbox(); }
+    function onGalleryKeys(e){
+      if(e.key === 'Escape') return closeLightbox();
+      if(e.key === 'ArrowRight') return nav(1);
+      if(e.key === 'ArrowLeft') return nav(-1);
+    }
+    function nav(delta){
+      currentIndex = (currentIndex + delta + CONFIG.gallery.images.length) % CONFIG.gallery.images.length;
+      openLightbox(currentIndex);
+    }
+    // Swipe en móvil
+    (function enableSwipe(){
+      const lb = $("#lightbox");
+      let x0 = null;
+      lb.addEventListener('touchstart', e=> { x0 = e.changedTouches[0].clientX; }, {passive:true});
+      lb.addEventListener('touchend', e=>{
+        if(x0 == null) return;
+        const dx = e.changedTouches[0].clientX - x0;
+        if(Math.abs(dx) > 40) nav(dx>0 ? -1 : 1);
+        x0 = null;
+      }, {passive:true});
+    })();
+
+    /* =========================
+       MÚSICA Y SFX
+       ========================= */
+    const bgm = $("#bgm");
+    const sfx = $("#sfx");
+    bgm.src = CONFIG.audio.musicUrl || "";
+    sfx.src = CONFIG.audio.openSfxUrl || "";
+    const musicBtn = $("#musicBtn");
+    function reflectMusicUI(){
+      const on = store.musicOn;
+      musicBtn.setAttribute('aria-pressed', String(on));
+      musicBtn.textContent = on ? "⏸ Música" : "▶ Música";
+    }
+    async function toggleMusic(){
+      const on = !store.musicOn;
+      store.musicOn = on;
+      reflectMusicUI();
+      try{
+        if(on){ await bgm.play(); } else { bgm.pause(); }
+      }catch(e){
+        $("#autoplayHint").textContent = CONFIG.audio.autoplayHint || "Pulsa ▶ para activar la música";
+      }
+    }
+    musicBtn.addEventListener('click', toggleMusic);
+    window.addEventListener('DOMContentLoaded', ()=>{
+      $("#autoplayHint").textContent = CONFIG.audio.autoplayHint || "";
+      reflectMusicUI();
+    });
+
+    /* =========================
+       CONTROLES CONFETI & ANIMACIONES
+       ========================= */
+    $("#confettiBtn").addEventListener('click', ()=> burstConfetti(1600, ['circle','heart']));
+    $("#burstBtn").addEventListener('click', ()=> burstConfetti(1600, ['circle','heart']));
+    const motionBtn = $("#toggleMotionBtn");
+    function reflectMotionUI(){
+      const off = store.motionOff || prefersReduced;
+      document.body.dataset.reduced = String(off);
+      motionBtn.setAttribute('aria-pressed', String(off));
+      motionBtn.textContent = off ? "▶ Animaciones" : "⏸ Animaciones";
+      if(particlesContainer){
+        const number = off ? (isCoarse ? 25 : 45) : (isCoarse ? 50 : 80);
+        particlesContainer.options.particles.number.value = number;
+        particlesContainer.options.particles.move.speed = off ? 0.4 : 1.4;
+        particlesContainer.options.interactivity.events.onHover.enable = !off;
+        particlesContainer.refresh();
+      }
+    }
+    motionBtn.addEventListener('click', ()=>{
+      store.motionOff = !(store.motionOff || false);
+      reflectMotionUI();
+    });
+
+    /* =========================
+       COPIAR MENSAJE
+       ========================= */
+    $("#copyMsgBtn").addEventListener('click', async ()=>{
+      const el = $("#greeting").cloneNode(true);
+      const text = el.textContent.replace(/\s+\n/g,"\n").trim();
+      try{
+        await navigator.clipboard.writeText(text);
+        $("#copyMsgBtn").textContent = "✔ Copiado";
+        setTimeout(()=> $("#copyMsgBtn").textContent = "Copiar mensaje", 1500);
+      }catch{
+        alert("No se pudo copiar. Selecciona el texto manualmente.");
+      }
+    });
+    $("#selectMsgBtn").addEventListener('click', ()=>{
+      const range = document.createRange();
+      range.selectNodeContents($("#greeting"));
+      const sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(range);
+    });
+
+    /* =========================
+       ABRIR REGALO
+       ========================= */
+    const openGiftBtn = $("#openGiftBtn");
+    const giftModal = $("#giftModal");
+    const giftCloseBtn = $("#giftCloseBtn");
+    const giftConfettiBtn = $("#giftConfettiBtn");
+    // Cuando se abre el regalo, primero animamos la tapa y disparamos confeti.
+    // Después de un breve retraso (2.5 s) mostramos el mensaje en el modal.
+    openGiftBtn.addEventListener('click', ()=>{
+      if(openGiftBtn.disabled) return;
+      // Evitar múltiples pulsaciones mientras se ejecuta la animación
+      openGiftBtn.disabled = true;
+      const lid = $(".lid");
+      // Animación de apertura de la tapa
+      if(lid && !(prefersReduced || store.motionOff)){
+        lid.style.transition = "transform 1s cubic-bezier(0.42, 0, 0.58, 1), opacity .6s ease";
+        lid.style.transformOrigin = "left center";
+        // Elevar y girar la tapa para dar sensación de apertura
+        lid.style.transform = "rotate(-35deg) translateY(-25%)";
+      }
+      // Sonido de apertura
+      try{ sfx.currentTime = 0; sfx.play(); }catch{}
+      // Reanudar la música de fondo si estaba activada
+      if(store.musicOn){ try{ bgm.play(); }catch{} }
+      // Confeti inicial saliendo de la caja
+      burstConfetti(2000, ['heart','star','square']);
+      // Mostrar la cabeza del oso asomándose un poco después de empezar la animación de la tapa
+      const bear = $("#bearHead");
+      setTimeout(() => {
+        if(bear) bear.classList.add('shown');
+      }, 1100);
+      // Después de 2.5 segundos, ocultar la cabeza del oso y mostrar el modal con el mensaje
+      setTimeout(()=>{
+        if(bear) bear.classList.remove('shown');
+        $("#giftModalTitle").textContent = CONFIG.messages.modalTitle;
+        $("#giftModalBody").innerHTML = CONFIG.messages.modalBodyHTML;
+        // Confeti extra justo al aparecer el mensaje
+        burstConfetti(1600, ['heart','star']);
+        giftTrap.open();
+        store.opened = true;
+        openGiftBtn.disabled = false;
+      }, 2500);
+    });
+    giftCloseBtn.addEventListener('click', ()=> giftTrap.close());
+    giftConfettiBtn.addEventListener('click', ()=> burstConfetti(1400, ['heart','star']));
+    giftModal.addEventListener('click', e=>{ if(e.target === giftModal) giftTrap.close(); });
+
+    /* =========================
+       RELLENO DE TEXTOS Y UI
+       ========================= */
+    function fillTexts(){
+      $("#heroTitle").textContent = CONFIG.messages.heroTitle || `¡Feliz Cumple, ${CONFIG.honoree}!`;
+      $("#giftRibbon").textContent = CONFIG.messages.ribbon;
+      $("#greeting").innerHTML = CONFIG.messages.greetingHTML;
+      document.documentElement.style.setProperty('--primary', CONFIG.colors.primary);
+      document.documentElement.style.setProperty('--secondary', CONFIG.colors.secondary);
+      document.documentElement.style.setProperty('--bg-start', CONFIG.colors.bgStart);
+      document.documentElement.style.setProperty('--bg-end', CONFIG.colors.bgEnd);
+    }
+
+    /* =========================
+       ARRANQUE
+       ========================= */
+    window.addEventListener('DOMContentLoaded', async ()=>{
+      fillTexts();
+      buildGallery();
+      reflectMotionUI();
+      startCountdown();
+      initMessageCensor();
+      await initParticles();
+      if(store.opened){
+        $("#statusPill").hidden = false;
+        openGiftBtn.disabled = false;
+        openGiftBtn.removeAttribute('aria-disabled');
+        openGiftBtn.title = "Volver a ver la sorpresa";
+      }
+      $("#closeBtn").addEventListener('click', closeLightbox);
+      $("#prevBtn").addEventListener('click', ()=> nav(-1));
+      $("#nextBtn").addEventListener('click', ()=> nav(1));
+      $("#lightbox").addEventListener('click', e=>{ if(e.target === e.currentTarget) closeLightbox(); });
+    });
+    document.title = `¡Feliz Cumple, ${CONFIG.honoree}!`;
+  </script>
+</body>
+</html>
