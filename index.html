@@ -143,12 +143,34 @@
     .gift-draw{
       width: 50%; min-width: 220px; aspect-ratio: 1/1; position: relative;
     }
-    .box{ width:100%; height:60%; background:#ff9ec0; border-radius:12px; position:absolute; bottom:0; left:0;
+.box{
+      width:100%;
+      height:60%;
+      background:#ff9ec0;
+      border-radius:12px;
+      position:absolute;
+      bottom:0;
+      left:0;
       box-shadow: inset 0 -3px 0 rgba(0,0,0,.06), var(--shadow);
-      transform-origin: center; }
+      transform-origin: center;
+      /* Colocamos la caja por encima del oso para que parezca que el oso sale desde dentro */
+      z-index:3;
+    }
     .box::after{ content:""; position:absolute; inset:0; background:
       linear-gradient(90deg, rgba(255,255,255,.8) 48%, rgba(255,64,129,.9) 48%, rgba(255,64,129,.9) 52%, rgba(255,255,255,.8) 52%); border-radius:12px; }
-    .lid{ width:110%; height:22%; left:-5%; top:-2%; position:absolute; background:#ff78a7; border-radius:14px; box-shadow: var(--shadow); }
+.lid{
+      width:110%;
+      height:22%;
+      left:-5%;
+      /* Acercamos la tapa a la caja reduciendo el margen superior */
+      top:0;
+      position:absolute;
+      background:#ff78a7;
+      border-radius:14px;
+      box-shadow: var(--shadow);
+      /* La tapa debe estar sobre la caja y el oso */
+      z-index:4;
+    }
     .lid::after{ content:""; position:absolute; inset:0; background:
       linear-gradient(90deg, rgba(255,255,255,.9) 48%, rgba(233,30,99,.95) 48%, rgba(233,30,99,.95) 52%, rgba(255,255,255,.9) 52%); border-radius:14px; }
     .gift-box .hint{ position:absolute; bottom:12px; left:12px; font-size:.9rem; color:#7a4458; }
@@ -156,7 +178,8 @@
     /* Oso asomándose dentro de la caja de regalo */
     .bear-head{
       position: absolute;
-      bottom: 20%;
+      /* Ajustamos la posición inicial del oso ligeramente más baja para que parezca que sale desde dentro de la caja */
+      bottom: 18%;
       left: 50%;
       width: 60%;
       max-width: 180px;
@@ -166,8 +189,9 @@
       transition: transform .6s ease-out, opacity .6s ease-out;
       z-index: 2;
     }
-    .bear-head.shown{
-      transform: translate(-50%, -20%);
+.bear-head.shown{
+      /* Levantamos el oso un poco más para que asome más de la caja */
+      transform: translate(-50%, -35%);
       opacity: 1;
     }
     .countdown{
@@ -441,12 +465,12 @@
         ribbon: "No lo abras hasta el 9 de septiembre",
         heroTitle: "¡Feliz Cumple, Alba!",
         greetingHTML:
-          "<p>Hoy celebramos tu día, <strong>Mi niña</strong>. Que cada latido te recuerde lo valiosa que eres y que este año llegue cargado de alegría, positividad y aventuras inolvidables.</p>" +
+          "<p>Hoy celebramos tu día, <strong>Alba</strong>. Que cada latido te recuerde lo valiosa que eres y que este año llegue cargado de alegría, amor y aventuras inolvidables.</p>" +
           "<p>Gracias por tu luz y tu sonrisa. ¡Que todos tus deseos se cumplan! ✨</p>",
         modalTitle: "¡Sorpresa! 🎉💖",
         modalBodyHTML:
           // Mensaje personalizado para Alba. Habla de cómo revivió la infancia y el niño interior, y promete protección y cariño a pesar de la distancia.
-          "<p>Desde que llegaste a mi vida, <strong>Grandecita mia</strong>, reviviste a mi niño interior. Contigo volví a sentir la magia y la inocencia de la infancia que pensé haber perdido. Gracias a ti, mi corazón volvió a jugar, a reír, a maravillarse.</p>" +
+          "<p>Desde que llegaste a mi vida, <strong>Alba</strong>, reviviste a mi niño interior. Contigo volví a sentir la magia y la inocencia de la infancia que pensé haber perdido. Gracias a ti, mi corazón volvió a jugar, a reír, a maravillarse.</p>" +
           "<p>Siempre serás mi gordita grandecita, y aunque nuestros caminos hoy se separen, mi cariño y mi admiración por ti permanecen intactos. Deseo que cada cumpleaños venga cargado de momentos hermosos y que siempre encuentres motivos para sonreír.</p>" +
           "<p>Aunque la distancia nos separe, prometo estar ahí para ti. Seguiremos cuidándonos y enseñándonos mutuamente, aprendiendo juntos a volar alto. Tu bienestar y tu felicidad siempre serán mi prioridad, porque sé que juntos podemos superar cualquier distancia.</p>"
       },
